@@ -1,0 +1,36 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    tools:context=".MainActivity"
+    tools:ignore="NestedWeights">
+
+    <!-- Personal information -->
+    <PreferenceCategory
+        android:key="personal_information"
+        android:title="string/personal_information">
+
+        <EditTextPreference
+            android:key="username_settings"
+            android:title="ame"
+            android:summary="summary_username"
+            android:inputType="textNoSuggestions">
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:key="height_settings"
+            android:title="summary_height"
+            android:summary="summary_height"
+            android:inputType="number">
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:key="age_settings"
+            android:title="ummary_age"
+            android:summary="summary_age"
+            android:inputType="numberDecimal">
+        </EditTextPreference>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

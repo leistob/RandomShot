@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.RouletteFragment">
+
+    <TextView
+        android:id="@+id/heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:textSize="30sp"
+        android:text="@string/russian_roulette" />
+
+    <!-- Speed Bar Layout -->
+    <RelativeLayout
+        android:id="@+id/layout_speed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/heading"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/text_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:text="@string/speed" />
+
+        <SeekBar
+            android:id="@+id/seekBar_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/current_speed"
+            android:layout_toStartOf="@id/current_speed"
+            android:layout_toEndOf="@id/text_speed"
+            android:layout_toRightOf="@id/text_speed"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@id/current_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/zero" />
+
+    </RelativeLayout>
+
+    <!-- Radius Bar Layout -->
+    <RelativeLayout
+        android:id="@+id/layout_radius"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_speed"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/text_radius"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:text="@string/radius" />
+
+        <SeekBar
+            android:id="@+id/seekBar_radius"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/current_radius"
+            android:layout_toStartOf="@id/current_radius"
+            android:layout_toEndOf="@id/text_radius"
+            android:layout_toRightOf="@id/text_radius"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@id/current_radius"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/zero" />
+
+    </RelativeLayout>
+
+    <!-- Laenge Bar Layout -->
+    <RelativeLayout
+        android:id="@+id/layout_length"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_radius"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/text_laenge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:text="@string/length" />
+
+        <SeekBar
+            android:id="@+id/seekBar_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/current_length"
+            android:layout_toStartOf="@id/current_length"
+            android:layout_toEndOf="@id/text_laenge"
+            android:layout_toRightOf="@id/text_laenge"/>
+
+        <TextView
+            android:id="@id/current_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/zero" />
+
+    </RelativeLayout>
+
+    <!-- Duration Bar Layout -->
+    <RelativeLayout
+        android:id="@+id/layout_duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_length"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/duration_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="@string/zero" />
+
+        <org.florescu.android.rangeseekbar.RangeSeekBar
+            android:id="@+id/seekbar_range"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/duration_end"
+            android:layout_toStartOf="@id/duration_end"
+            android:layout_toEndOf="@id/duration_start"
+            android:layout_toRightOf="@id/duration_start"/>
+
+        <TextView
+            android:id="@id/duration_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/zero" />
+
+    </RelativeLayout>
+
+    <tob.leis.randomshot.Roadmap
+        android:id="@+id/view_road"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_layout"
+        android:layout_below="@id/layout_duration"
+        android:layout_margin="8dp"/>
+
+    <LinearLayout
+        android:id="@id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/start"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:background="@color/green"
+            android:textColor="@color/white"
+            android:id="@+id/start_button"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/pause"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:background="@color/amber"
+            android:textColor="@color/white"
+            android:id="@+id/pause_button"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/resume"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:background="@color/green"
+            android:textColor="@color/white"
+            android:id="@+id/resume_button"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/stop"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:background="@color/red"
+            android:textColor="@color/white"
+            android:id="@+id/stop_button"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

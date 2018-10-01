@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Einstellungen</string>
+    <string name="pause">Pause</string>
+    <string name="stop">Stop</string>
+    <string name="start">Starten</string>
+    <string name="resume">Fortsetzen</string>
+    <string name="russian_roulette">Russisch Roulette</string>
+    <string name="length">Länge</string>
+    <string name="about">Impressum</string>
+    <string name="controller">Controller</string>
+    <string name="settings">Einstellungen</string>
+    <string name="cheers">Auf die Gesundheit!</string>
+    <string name="speed">Pace</string>
+</resources>
