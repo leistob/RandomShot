@@ -19,6 +19,8 @@ import java.util.Locale;
 
 import tob.leis.randomshot.R;
 import tob.leis.randomshot.Roadmap;
+import tob.leis.randomshot.helper.Bluetooth;
+import tob.leis.randomshot.helper.BluetoothHelper;
 
 import static tob.leis.randomshot.helper.JSONHelper.LENGTH;
 import static tob.leis.randomshot.helper.JSONHelper.RADIUS;
@@ -179,6 +181,18 @@ public class RouletteFragment extends Fragment {
                 switch (view.getId()) {
                     case R.id.start_button:
                         currentState = STATE_RUNNING;
+                        new Thread(new Runnable() {
+                            public void run() {
+                                System.out.println("Start");
+                                BluetoothHelper h = new BluetoothHelper();
+                                h.verbinden();
+                                h.senden();
+                                h.empfangen();
+                                h.trennen();
+                                System.out.println("Fin");
+                            }
+                        }).start();
+
                         //TODO: SEND START COMMAND VIA BLUETOOTH TO ARDUINO
                         //TODO: Calculate radius, speed, etc. from partial progressbar value
                         //String cmd = JSONHelper.buildStart();
