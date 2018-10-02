@@ -45,6 +45,8 @@ public class RouletteFragment extends Fragment {
 
     int currentState = STATE_STOPPED;
 
+    private BluetoothHelper bluetoothHelper;
+
     public RouletteFragment() {
         // Required empty public constructor
     }
@@ -61,7 +63,6 @@ public class RouletteFragment extends Fragment {
         savedInstanceState.putInt(LENGTH, lengthBar.getProgress());
         savedInstanceState.putInt(RADIUS, radiusBar.getProgress());
         savedInstanceState.putInt(SPEED, speedBar.getProgress());
-
     }
 
     @Override
@@ -83,11 +84,9 @@ public class RouletteFragment extends Fragment {
             button.setOnTouchListener(listener);
         }
 
-
         radiusBar = rootView.findViewById(R.id.seekBar_radius);
         lengthBar = rootView.findViewById(R.id.seekBar_length);
         speedBar = rootView.findViewById(R.id.seekBar_speed);
-
 
         radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -139,6 +138,9 @@ public class RouletteFragment extends Fragment {
         super.onResume();
         updateButtons();
         roadMap.invalidate();
+
+        bluetoothHelper = new BluetoothHelper();
+        bluetoothHelper.connect();
     }
 
 
@@ -184,11 +186,7 @@ public class RouletteFragment extends Fragment {
                         new Thread(new Runnable() {
                             public void run() {
                                 System.out.println("Start");
-                                BluetoothHelper h = new BluetoothHelper();
-                                h.verbinden();
-                                h.senden();
-                                h.empfangen();
-                                h.trennen();
+                                bluetoothHelper.send();
                                 System.out.println("Fin");
                             }
                         }).start();

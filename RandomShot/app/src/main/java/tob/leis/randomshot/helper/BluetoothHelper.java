@@ -10,32 +10,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Set;
-import java.util.UUID;
-
 
 /**
  * Created by tobi on 16.02.16.
  */
 public class BluetoothHelper {
 
-    //private BluetoothAdapter blueAdapter;
+    private static final String LOG_TAG = "Bluetooth";
+
+    //UUID fuer Kommunikation mit Seriellen Modulen
+    //private UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private BluetoothDevice bluetoothDevice;
-
-    // UUID fuer Kommunikation mit Seriellen Modulen
-    private UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    private static final String LOG_TAG = "FRAGDUINO";
-
-    // Variablen
     private BluetoothAdapter adapter = null;
     private BluetoothSocket socket = null;
     private OutputStream stream_out = null;
     private InputStream stream_in = null;
-    private boolean is_connected = false;
+    private boolean isConnected = false;
 
     public BluetoothHelper() {
     }
 
-    public void verbinden() {
+    public void connect() {
 
         adapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -49,116 +44,90 @@ public class BluetoothHelper {
 
         ParcelUuid[] uuids = bluetoothDevice.getUuids();
 
-
-        //BluetoothSocket mmSocket = null;
-
-        /*try {
-            mmSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuids[0].getUuid());
-            mmSocket.connect();
-            OutputStream mmOutputStream = mmSocket.getOutputStream();
-            InputStream mmInputStream = mmSocket.getInputStream();
-
-            String test = "Test123\n";
-            mmOutputStream.write(test.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }      */
-
-        // Socket erstellen
+        //Create socket
         try {
             socket = bluetoothDevice.createRfcommSocketToServiceRecord(uuids[0].getUuid());
-            Log.d(LOG_TAG, "Socket erstellt");
+            Log.d(LOG_TAG, "Created socket");
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Socket Erstellung fehlgeschlagen: " + e.toString());
+            Log.e(LOG_TAG, "Socket creation failed: " + e.toString());
         }
 
         adapter.cancelDiscovery();
 
-        // Socket verbinden
+        //Connect socket
         try {
             socket.connect();
-            is_connected = true;
-            Log.d(LOG_TAG, "Socket verbunden");
+            isConnected = true;
+            Log.d(LOG_TAG, "Socket connected");
         } catch (IOException e) {
-            is_connected = false;
-            Log.e(LOG_TAG, "Socket kann nicht verbinden: " + e.toString());
+            isConnected = false;
+            Log.e(LOG_TAG, "Couldn't connect socket: " + e.toString());
         }
 
-        // Socket beenden, falls nicht verbunden werden konnte
-        if (!is_connected) {
+        //Close socket, if no connection could be established.
+        if (!isConnected) {
             try {
                 socket.close();
             } catch (Exception e) {
                 Log.e(LOG_TAG,
-                        "Socket kann nicht beendet werden: " + e.toString());
+                        "Socket couldn't be closed: " + e.toString());
             }
         }
 
-        // Outputstream erstellen:
+        //Create Outputstream
         try {
             stream_out = socket.getOutputStream();
-            Log.d(LOG_TAG, "OutputStream erstellt");
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "OutputStream Fehler: " + e.toString());
-            is_connected = false;
-        }
-
-        // Inputstream erstellen
-        try {
             stream_in = socket.getInputStream();
-            Log.d(LOG_TAG, "InputStream erstellt");
+            Log.d(LOG_TAG, "OutputStream and InputStream created.");
         } catch (IOException e) {
-            Log.e(LOG_TAG, "InputStream Fehler: " + e.toString());
-            is_connected = false;
+            Log.e(LOG_TAG, "Error: " + e.toString());
+            isConnected = false;
         }
 
-        if (is_connected) {
-            Log.e(LOG_TAG, "Verbunden mit");
+        if (isConnected) {
+            Log.e(LOG_TAG, "Connected.");
         } else {
-            Log.e(LOG_TAG,"Verbindungsfehler");
+            Log.e(LOG_TAG,"Connection error.");
         }
     }
 
-    public void senden() {
+    public void send() {
         String message = "Testat\n";
         byte[] msgBuffer = message.getBytes();
-        if (is_connected) {
-            Log.d(LOG_TAG, "Sende Nachricht: " + message);
+        if (isConnected) {
+            Log.d(LOG_TAG, "Send message: " + message);
             try {
                 stream_out.write(msgBuffer);
             } catch (IOException e) {
                 Log.e(LOG_TAG,
-                        "Bluetest: Exception beim Senden: " + e.toString());
+                        "Bluetooth exception:" + e.toString());
             }
         }
     }
 
-    public void empfangen() {
-        byte[] buffer = new byte[1024]; // Puffer
-        int laenge; // Anzahl empf. Bytes
+    public void receive() {
+        byte[] buffer = new byte[1024];
+        int laenge;
         String msg = "";
         try {
             if (stream_in.available() > 0) {
                 laenge = stream_in.read(buffer);
-                Log.d(LOG_TAG,
-                        "Anzahl empfangender Bytes: " + String.valueOf(laenge));
 
-                // Message zusammensetzen:
                 for (int i = 0; i < laenge; i++)
                     msg += (char) buffer[i];
 
                 Log.d(LOG_TAG, "Message: " + msg);
             } else
-                Log.e(LOG_TAG,"Nichts empfangen");
+                Log.e(LOG_TAG,"Nothing received");
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Fehler beim Empfangen: " + e.toString());
+            Log.e(LOG_TAG, "Error when receiving: " + e.toString());
         }
     }
 
     public void trennen() {
-        if (is_connected && stream_out != null) {
-            is_connected = false;
-            Log.d(LOG_TAG, "Trennen: Beende Verbindung");
+        if (isConnected && stream_out != null) {
+            isConnected = false;
+            Log.d(LOG_TAG, "Disconnecting..");
             try {
                 stream_out.flush();
                 socket.close();
