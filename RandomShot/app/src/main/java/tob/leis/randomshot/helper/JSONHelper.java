@@ -23,46 +23,61 @@ public class JSONHelper {
     public static final String SPEED = "speed";
     public static final String ROTATION = "rotation";
 
-    public static String buildStart(int radius, int length, int speed, int time) throws JSONException {
+    public static String buildStart(int radius, int length, int speed, int time) {
         JSONObject obj = new JSONObject();
 
-        obj.put(MODE, ROULETTE);
-        obj.put(CMD, START);
-        obj.put(RADIUS, radius);
-        obj.put(LENGTH, length);
-        obj.put(SPEED, speed);
-        obj.put(TIME, time);
+        try {
+            obj.put(MODE, ROULETTE);
+            obj.put(CMD, START);
+            obj.put(RADIUS, radius);
+            obj.put(LENGTH, length);
+            obj.put(SPEED, speed);
+            obj.put(TIME, time);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         return obj.toString();
     }
 
-    public static String buildResume() throws JSONException {
+    public static String buildResume() {
         JSONObject obj = new JSONObject();
 
-        obj.put(CMD, RESUME);
+        try {
+            obj.put(CMD, RESUME);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         return obj.toString();
     }
 
-    public static String buildStop() throws JSONException {
+    public static String buildStop() {
         JSONObject obj = new JSONObject();
 
-        obj.put(CMD, STOP);
+        try {
+            obj.put(CMD, STOP);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         return obj.toString();
     }
 
-    public static String buildPause() throws JSONException {
+    public static String buildPause() {
         JSONObject obj = new JSONObject();
 
-        obj.put(CMD, PAUSE);
+        try {
+            obj.put(CMD, PAUSE);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         return obj.toString();
     }
 
-    public static String buildDrive(int speed, int rotation){
+    public static String buildDrive(int speed, int rotation) {
         JSONObject obj = new JSONObject();
-
 
         try {
             obj.put(CMD, CONTROLLER);
@@ -72,11 +87,6 @@ public class JSONHelper {
             e.printStackTrace();
         }
 
-
         return obj.toString();
     }
-
-
-
-
 }

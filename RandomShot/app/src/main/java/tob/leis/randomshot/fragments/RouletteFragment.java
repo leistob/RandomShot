@@ -21,6 +21,7 @@ import tob.leis.randomshot.R;
 import tob.leis.randomshot.Roadmap;
 import tob.leis.randomshot.helper.Bluetooth;
 import tob.leis.randomshot.helper.BluetoothHelper;
+import tob.leis.randomshot.helper.JSONHelper;
 
 import static tob.leis.randomshot.helper.JSONHelper.LENGTH;
 import static tob.leis.randomshot.helper.JSONHelper.RADIUS;
@@ -30,6 +31,7 @@ import static tob.leis.randomshot.helper.JSONHelper.SPEED;
 public class RouletteFragment extends Fragment {
 
     public static final String TAG = "RouletteFragment";
+    public static final String NO_MODE_SELECTED = "No mode selected";
 
     public static final int STATE_STOPPED = 0;
     public static final int STATE_PAUSED  = 1;
@@ -180,35 +182,41 @@ public class RouletteFragment extends Fragment {
             } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 ((Button) view).setTextColor(Color.parseColor(lightGrey));
 
+                String sendMessage = null;
                 switch (view.getId()) {
                     case R.id.start_button:
                         currentState = STATE_RUNNING;
-                        new Thread(new Runnable() {
-                            public void run() {
-                                System.out.println("Start");
-                                bluetoothHelper.send();
-                                System.out.println("Fin");
-                            }
-                        }).start();
-
-                        //TODO: SEND START COMMAND VIA BLUETOOTH TO ARDUINO
                         //TODO: Calculate radius, speed, etc. from partial progressbar value
-                        //String cmd = JSONHelper.buildStart();
+                        sendMessage = JSONHelper.buildStart(1, 1, 1, 1);
                         break;
                     case R.id.pause_button:
                         currentState = STATE_PAUSED;
-                        //TODO: SEND PAUSE COMMAND VIA BLUETOOTH TO ARDUINO
-                        //String cmd = JSONHelper.buildPause();
+                        sendMessage = JSONHelper.buildPause();
                         break;
                     case R.id.resume_button:
                         currentState = STATE_RUNNING;
-                        //TODO: SEND CONTINUE COMMAND VIA BLUETOOTH TO ARDUINO
+                        sendMessage = JSONHelper.buildResume();
                         break;
                     case R.id.stop_button:
                         currentState = STATE_STOPPED;
-                        //TODO: SEND STOP COMMAND VIA BLUETOOTH TO ARDUINO
+                        sendMessage = JSONHelper.buildStop();
+                        break;
+                    default:
+                        sendMessage = NO_MODE_SELECTED;
                         break;
                 }
+
+                final String msg  = sendMessage;
+                //TODO: SEND COMMAND VIA BLUETOOTH TO ARDUINO
+                new Thread(new Runnable() {
+                    public void run() {
+                        System.out.println("Start");
+                        bluetoothHelper.send(msg + "\n");
+                        System.out.println(bluetoothHelper.receive());
+                        System.out.println("Fin");
+                    }
+                }).start();
+
                 updateButtons();
             }
             return true;

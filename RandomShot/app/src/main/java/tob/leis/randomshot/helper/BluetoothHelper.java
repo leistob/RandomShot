@@ -17,11 +17,11 @@ import java.util.Set;
 public class BluetoothHelper {
 
     private static final String LOG_TAG = "Bluetooth";
+    private static final String ERROR_RECEIVE = "Couldn't receive message";
 
     //UUID fuer Kommunikation mit Seriellen Modulen
     //private UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    private BluetoothDevice bluetoothDevice;
-    private BluetoothAdapter adapter = null;
+
     private BluetoothSocket socket = null;
     private OutputStream stream_out = null;
     private InputStream stream_in = null;
@@ -32,7 +32,8 @@ public class BluetoothHelper {
 
     public void connect() {
 
-        adapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothDevice bluetoothDevice = null;
 
         Set pairedDevices = adapter.getBondedDevices();
         if(pairedDevices.size() > 0) {
@@ -42,45 +43,47 @@ public class BluetoothHelper {
             }
         }
 
-        ParcelUuid[] uuids = bluetoothDevice.getUuids();
+        ParcelUuid[] uuids = null;
+        try{
+            uuids = bluetoothDevice.getUuids();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return;
+        }
 
-        //Create socket
+
         try {
             socket = bluetoothDevice.createRfcommSocketToServiceRecord(uuids[0].getUuid());
-            Log.d(LOG_TAG, "Created socket");
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Socket creation failed: " + e.toString());
+            e.printStackTrace();
         }
 
         adapter.cancelDiscovery();
 
-        //Connect socket
         try {
             socket.connect();
             isConnected = true;
-            Log.d(LOG_TAG, "Socket connected");
         } catch (IOException e) {
             isConnected = false;
-            Log.e(LOG_TAG, "Couldn't connect socket: " + e.toString());
+            e.printStackTrace();
         }
 
-        //Close socket, if no connection could be established.
+
         if (!isConnected) {
             try {
                 socket.close();
             } catch (Exception e) {
-                Log.e(LOG_TAG,
-                        "Socket couldn't be closed: " + e.toString());
+                e.printStackTrace();
             }
         }
 
-        //Create Outputstream
+
         try {
             stream_out = socket.getOutputStream();
             stream_in = socket.getInputStream();
             Log.d(LOG_TAG, "OutputStream and InputStream created.");
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Error: " + e.toString());
+            e.printStackTrace();
             isConnected = false;
         }
 
@@ -91,8 +94,7 @@ public class BluetoothHelper {
         }
     }
 
-    public void send() {
-        String message = "Testat\n";
+    public void send(String message) {
         byte[] msgBuffer = message.getBytes();
         if (isConnected) {
             Log.d(LOG_TAG, "Send message: " + message);
@@ -105,26 +107,28 @@ public class BluetoothHelper {
         }
     }
 
-    public void receive() {
+    public String receive() {
         byte[] buffer = new byte[1024];
-        int laenge;
+        int length;
         String msg = "";
         try {
             if (stream_in.available() > 0) {
-                laenge = stream_in.read(buffer);
-
-                for (int i = 0; i < laenge; i++)
+                length = stream_in.read(buffer);
+                for (int i = 0; i < length; i++) {
                     msg += (char) buffer[i];
+                }
+            } else {
+                msg = ERROR_RECEIVE;
+            }
 
-                Log.d(LOG_TAG, "Message: " + msg);
-            } else
-                Log.e(LOG_TAG,"Nothing received");
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Error when receiving: " + e.toString());
+            msg = ERROR_RECEIVE;
+            e.printStackTrace();
         }
+        return msg;
     }
 
-    public void trennen() {
+    public void closeCon() {
         if (isConnected && stream_out != null) {
             isConnected = false;
             Log.d(LOG_TAG, "Disconnecting..");
@@ -132,11 +136,8 @@ public class BluetoothHelper {
                 stream_out.flush();
                 socket.close();
             } catch (IOException e) {
-                Log.e(LOG_TAG,
-                        "Fehler beim beenden des Streams und schliessen des Sockets: "
-                                + e.toString());
+                e.printStackTrace();
             }
-        } else
-            Log.d(LOG_TAG, "Trennen: Keine Verbindung zum beenden");
+        }
     }
 }
